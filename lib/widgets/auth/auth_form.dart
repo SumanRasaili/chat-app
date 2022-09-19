@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Authform extends StatefulWidget {
-  const Authform({Key? key}) : super(key: key);
+   Authform(this.submitFn);
+  final void Function (String email,String password,String userName,bool isLogin)submitFn;
 
   @override
   State<Authform> createState() => _AuthformState();
@@ -12,14 +13,21 @@ class _AuthformState extends State<Authform> {
   String _userPassword = '';
   String _userEmail = '';
   String _userName = '';
+  var _isLogin = false;
+
+  
   void _trySubmit() {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState!.save();
-      print(_userEmail);
-      print(_userName);
-      print(_userPassword);
+      widget.submitFn(
+        _userEmail,
+        _userPassword,
+        _userName,
+        _isLogin,
+      );
+    
     }
   }
 
@@ -38,6 +46,7 @@ class _AuthformState extends State<Authform> {
                     //that makes column to only take its height
                     children: [
                       TextFormField(
+                        key: const ValueKey('email'),
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value!.isEmpty || !value.contains('@')) {
@@ -53,7 +62,9 @@ class _AuthformState extends State<Authform> {
                           labelText: 'Email Address',
                         ),
                       ),
+                      if(!_isLogin)
                       TextFormField(
+                        key: const ValueKey('username'),
                         onSaved: (value) {
                           _userName = value!;
                         },
@@ -69,6 +80,7 @@ class _AuthformState extends State<Authform> {
                         ),
                       ),
                       TextFormField(
+                        key: const ValueKey('password'),
                         obscureText: true,
                         validator: (value) {
                           if (value!.isEmpty || value.length < 7) {
@@ -91,10 +103,14 @@ class _AuthformState extends State<Authform> {
                           onPressed: 
                             _trySubmit,
                           
-                          child: const Text('Login')),
+                          child: Text(_isLogin ?  'Login' : 'SignUp ')),
                       TextButton(
-                          onPressed: () {},
-                          child: const Text('Create New Account'))
+                          onPressed: () {
+                            setState(() {
+                              _isLogin = !_isLogin;
+                            });
+                          },
+                          child:  Text(_isLogin ?  'Create New Account' : 'I already have an Account'))
                     ],
                   ),
                 )),
