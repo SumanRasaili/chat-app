@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Authform extends StatefulWidget {
-   Authform(this.submitFn);
-  final void Function (String email,String password,String userName,bool isLogin)submitFn;
+  Authform(this.submitFn);
+  final void Function(String email, String password, String userName,
+      bool isLogin, BuildContext ctx) submitFn;
 
   @override
   State<Authform> createState() => _AuthformState();
@@ -15,19 +16,12 @@ class _AuthformState extends State<Authform> {
   String _userName = '';
   var _isLogin = false;
 
-  
   void _trySubmit() {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
     if (isValid) {
       _formKey.currentState!.save();
-      widget.submitFn(
-        _userEmail,
-        _userPassword,
-        _userName,
-        _isLogin,
-      );
-    
+      widget.submitFn(_userEmail.trim(), _userPassword.trim(), _userName.trim(), _isLogin, context);
     }
   }
 
@@ -62,23 +56,23 @@ class _AuthformState extends State<Authform> {
                           labelText: 'Email Address',
                         ),
                       ),
-                      if(!_isLogin)
-                      TextFormField(
-                        key: const ValueKey('username'),
-                        onSaved: (value) {
-                          _userName = value!;
-                        },
-                        validator: (value) {
-                          if (value!.isEmpty || value.length < 4) {
-                            return "Please enter at least 4 characters";
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: const InputDecoration(
-                          labelText: 'Username',
+                      if (!_isLogin)
+                        TextFormField(
+                          key: const ValueKey('username'),
+                          onSaved: (value) {
+                            _userName = value!;
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty || value.length < 4) {
+                              return "Please enter at least 4 characters";
+                            } else {
+                              return null;
+                            }
+                          },
+                          decoration: const InputDecoration(
+                            labelText: 'Username',
+                          ),
                         ),
-                      ),
                       TextFormField(
                         key: const ValueKey('password'),
                         obscureText: true,
@@ -100,17 +94,17 @@ class _AuthformState extends State<Authform> {
                         height: 4,
                       ),
                       ElevatedButton(
-                          onPressed: 
-                            _trySubmit,
-                          
-                          child: Text(_isLogin ?  'Login' : 'SignUp ')),
+                          onPressed: _trySubmit,
+                          child: Text(_isLogin ? 'Login' : 'SignUp ')),
                       TextButton(
                           onPressed: () {
                             setState(() {
                               _isLogin = !_isLogin;
                             });
                           },
-                          child:  Text(_isLogin ?  'Create New Account' : 'I already have an Account'))
+                          child: Text(_isLogin
+                              ? 'Create New Account'
+                              : 'I already have an Account'))
                     ],
                   ),
                 )),
