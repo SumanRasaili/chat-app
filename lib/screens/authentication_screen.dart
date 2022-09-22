@@ -28,29 +28,25 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       } else {
         authResult = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
-            //we have did thsi to save our new created user to the new collection of user which is not present but we create
-            //and we have taken the userid from the user created in authresult's uid and set the fields as uername and email
-            await FirebaseFirestore.instance.collection('users').doc(authResult.user!.uid).set({
-              'userName':userName,
-              'email':email,
-              'password':password
-
-            });
+        //we have did thsi to save our new created user to the new collection of user which is not present but we create
+        //and we have taken the userid from the user created in authresult's uid and set the fields as uername and email
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(authResult.user!.uid)
+            .set({'userName': userName, 'email': email, 'password': password});
       }
-
     } on PlatformException catch (err) {
-      var  message = 'An Error Occured!,Please Check your credentials!';
+      var message = 'An Error Occured!,Please Check your credentials!';
       if (err.message != null) {
         message = err.message!;
       }
-      
+
       //  ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
       //   elevation: 0,
       //     content: Text(err.message!), backgroundColor: Theme.of(ctx).errorColor));
-          setState(() {
-            _isLoading = false;
-          });
-
+      setState(() {
+        _isLoading = false;
+      });
     } catch (err) {
       print(err);
       setState(() {
@@ -63,6 +59,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        body: Authform(_submitAuthForm,_isLoading));
+        body: Authform(_submitAuthForm, _isLoading));
   }
 }

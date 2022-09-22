@@ -1,4 +1,7 @@
+
+import 'package:chatapp/pickers/user_picker_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Authform extends StatefulWidget {
   Authform(this.submitFn,this.isLoading);
@@ -17,6 +20,7 @@ class _AuthformState extends State<Authform> {
   String _userName = '';
   var _isLogin = false;
 
+
   void _trySubmit() {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
@@ -25,7 +29,11 @@ class _AuthformState extends State<Authform> {
       widget.submitFn(_userEmail.trim(), _userPassword.trim(), _userName.trim(), _isLogin, context);
     }
   }
+ _pickImage(){
 
+  final image = ImagePicker().pickImage(source: ImageSource.camera);
+  print(image);
+ }
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -40,6 +48,9 @@ class _AuthformState extends State<Authform> {
                     mainAxisSize: MainAxisSize.min,
                     //that makes column to only take its height
                     children: [
+                      if(!_isLogin)
+                     const UserImagePicker(),
+
                       TextFormField(
                         key: const ValueKey('email'),
                         keyboardType: TextInputType.emailAddress,

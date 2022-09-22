@@ -12,15 +12,18 @@ class NewMessage extends StatefulWidget {
 class _NewMessageState extends State<NewMessage> {
   final _controller = TextEditingController();
   var _enteredMessage = "";
-  void _sendMessage()  {
+  
+ void _sendMessage() async { 
     FocusScope.of(context).unfocus();
-    final user =   FirebaseAuth.instance.currentUser;
+    final  user =    FirebaseAuth.instance.currentUser;
+    final userData = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
     FirebaseFirestore.instance
         .collection('chat')
         .add({
           'text': _enteredMessage,
           'createdAt':Timestamp.now(),
-          'userId': user!.uid,
+          'userId': user.uid,
+          'userName': userData['userName'],
           });
     _controller
         .clear(); //it clears the text in textfield when the user taps on send button
