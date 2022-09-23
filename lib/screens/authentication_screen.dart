@@ -34,21 +34,24 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             email: email, password: password);
 
 //ref is the root bucket.here child is the folder and user_image is the path where imagae is stored adn the last is extension
-      final ref =   FirebaseStorage.instance.ref().child('user_image').child(authResult.user!.uid+'.jpg');
-     await ref.putFile(image);
-
-
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('user_image')
+            .child(authResult.user!.uid + '.jpg');
+        await ref.putFile(image);
+        final url =await ref.getDownloadURL();
         //we have did thsi to save our new created user to the new collection of user which is not present but we create
         //and we have taken the userid from the user created in authresult's uid and set the fields as uername and email
         await FirebaseFirestore.instance
             .collection('users')
             .doc(authResult.user!.uid)
-            .set({'userName': userName, 'email': email, 'password': password});
+            .set({
+          'userName': userName,
+          'email': email,
+          'password': password,
+          'image_url' : url
+        });
       }
-
-
-
-
     } on PlatformException catch (err) {
       var message = 'An Error Occured!,Please Check your credentials!';
       if (err.message != null) {
@@ -63,11 +66,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
       });
     } catch (err) {
       print(err);
-      
-      if(mounted){
-      setState(() {
-        _isLoading = false;
-      });
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }

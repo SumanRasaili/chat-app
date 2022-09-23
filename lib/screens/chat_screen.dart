@@ -1,6 +1,5 @@
 import 'package:chatapp/widgets/chats/message.dart';
 import 'package:chatapp/widgets/chats/new_message.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -47,11 +46,9 @@ class ChatScreen extends StatelessWidget {
       body: Container(
         child: Column(
           children: const [
-            Expanded(
-                child:
-                    Messages()),
-                    NewMessage(), //here in the message it is in the listview and the listview under column throws error so we need to wrap it in the expanded which is images
-                    //it is because listview takes the unbounded height so to minimize it we have to make it under expanded
+            Expanded(child: Messages()),
+            NewMessage(), //here in the message it is in the listview and the listview under column throws error so we need to wrap it in the expanded which is images
+            //it is because listview takes the unbounded height so to minimize it we have to make it under expanded
           ],
         ),
       ),
